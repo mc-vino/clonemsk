@@ -70,7 +70,6 @@
         ::-webkit-scrollbar-track{background:#f4f6f1}
         ::-webkit-scrollbar-thumb{background:#bcc4b8;border-radius:3px}
         col.cnum{width:36px}col.cname{width:220px}col.cat{width:90px}col.cprice{width:65px}col.cadult{width:70px}col.ccorm{width:75px}col.cdemrf{width:55px}col.cval{width:55px}col.crare{width:55px}col.csize{width:55px}col.cveg{width:75px}col.cleaf{width:70px}col.cgrw{width:70px}col.ccare{width:65px}col.ctotal{width:55px}
-        /* Стили корзины */
         #cartFloating{position:fixed;bottom:20px;right:20px;background:#2b3529;color:#e0c76a;border-radius:50px;padding:12px 22px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);cursor:pointer;z-index:300;transition:0.2s}
         #cartFloating:hover{background:#3a4d38}
         #cartFloating .cart-icon{font-size:22px}
@@ -95,7 +94,7 @@
 <div id="topbar">
     <div id="header">
         <h1>🌿 Закупки микроклонов · апрель</h1>
-        <div class="sub">191 позиция · Меристемные клоны · Нажмите на название для деталей и фото</div>
+        <div class="sub">334 позиции · Меристемные клоны · Нажмите на название для деталей и фото</div>
     </div>
     <div id="controls">
         <div class="fg"><label>Категория:</label><select id="filterCat"><option value="all">Все</option></select></div>
@@ -115,13 +114,11 @@
     <div id="nores" class="nores" style="display:none">Ничего не найдено</div>
 </div>
 
-<!-- Плавающая кнопка корзины -->
 <div id="cartFloating">
     <span class="cart-icon">🛒</span>
     <span class="cart-info" id="cartFloatingInfo">0 шт. / 0 р.</span>
 </div>
 
-<!-- Модальное окно корзины -->
 <div id="cartModal">
     <div id="cartWindow">
         <h3>🛒 Корзина закупки</h3>
@@ -131,27 +128,13 @@
     </div>
 </div>
 
-<!-- Модальное окно деталей растения -->
 <div id="mbg" onclick="closeMBg(event)"><div id="modal"><div id="mhdr"><div id="mtitle"></div><button id="mclose" onclick="closeM()">✕</button></div><div id="mbody"></div></div></div>
 
 <script>
 const SZ={1:'Мини',2:'Компакт',3:'Средний',4:'Крупный',5:'Гигант'},CA={1:'Оч.просто',2:'Просто',3:'Средне',4:'Сложно',5:'Оч.сложно'},GR={1:'Оч.медл.',2:'Медленный',3:'Средний',4:'Быстрый',5:'Оч.быстрый'};
 function pips(v){let h='';for(let i=1;i<=5;i++)h+='<span class="pip'+(i<=v?' on':'')+'"></span>';return h;}
 
-// ==================== ДАННЫЕ РАСТЕНИЙ ====================
 const plants = [
-    // (тот же огромный массив данных, что и в предыдущем ответе, полностью сохранён)
-    {num:1,category:"Alocasia",name:"Alocasia Aegis Mint Var",pack_qty:5,pack_price:38931.75,unit_price:7786.35,adult_price:12000,corm_price:2500,demand_rf:4,vegetation_type:"Куст",leaf_size:"15-30 см",value_rating:5,rarity_rating:5,size_rating:2,growth_rating:3,care_rating:4,cv:"Редкая вариегатная алоказия с мятным оттенком. Высокая коллекционная ценность. Спрос стабильный среди продвинутых коллекционеров.",cg:"Средний темп роста. Новый лист раз в 3-5 недель. Требует стабильных условий для сохранения вариегатности.",cc:"Влажность 65-75%, яркий рассеянный свет, боится переувлажнения и холодных сквозняков. Чувствительна к паутинному клещу."},
-    // ... все остальные 333 позиции ...
-    {num:334,category:"Syngonium",name:"Syngonium Babudi",pack_qty:100,pack_price:8370,unit_price:83.7,adult_price:500,corm_price:0,demand_rf:3,vegetation_type:"Лиана",leaf_size:"до 20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Бабуди.",cg:"Средний рост.",cc:"Простой уход."},
-];
-// К сожалению, из-за ограничений длины ответа я не могу вставить весь массив целиком, но он точно такой же, как в предыдущем ответе.
-// Пожалуйста, скопируйте массив plants из предыдущего сообщения.
-// (Здесь для примера оставлены только первая и последняя запись, в реальном коде должен быть полный список)
-// Убедитесь, что переменная plants содержит все 334 элемента, как в исходном коде.
-
-const plants = [
-    // === ALOCASIA (основной лист) ===
     {num:1,category:"Alocasia",name:"Alocasia Aegis Mint Var",pack_qty:5,pack_price:38931.75,unit_price:7786.35,adult_price:12000,corm_price:2500,demand_rf:4,vegetation_type:"Куст",leaf_size:"15-30 см",value_rating:5,rarity_rating:5,size_rating:2,growth_rating:3,care_rating:4,cv:"Редкая вариегатная алоказия с мятным оттенком. Высокая коллекционная ценность. Спрос стабильный среди продвинутых коллекционеров.",cg:"Средний темп роста. Новый лист раз в 3-5 недель. Требует стабильных условий для сохранения вариегатности.",cc:"Влажность 65-75%, яркий рассеянный свет, боится переувлажнения и холодных сквозняков. Чувствительна к паутинному клещу."},
     {num:2,category:"Alocasia",name:"Alocasia Azlanii Var (Aurea)",pack_qty:5,pack_price:38931.75,unit_price:7786.35,adult_price:12000,corm_price:2500,demand_rf:4,vegetation_type:"Куст",leaf_size:"10-20 см",value_rating:5,rarity_rating:5,size_rating:1,growth_rating:2,care_rating:4,cv:"Золотистая вариегатная форма Azlanii. Очень редкая, ценится за уникальную окраску с золотыми секторами.",cg:"Медленный рост. Требовательна к условиям. Лист раз в 4-6 недель.",cc:"Влажность 70%+, стабильное тепло 22-28°C, рассеянный свет, рыхлый субстрат."},
     {num:3,category:"Alocasia",name:"Alocasia Bambino Var (Albo Mixed Aurea)",pack_qty:10,pack_price:10615.5,unit_price:1061.55,adult_price:2500,corm_price:600,demand_rf:4,vegetation_type:"Куст",leaf_size:"10-20 см",value_rating:4,rarity_rating:3,size_rating:1,growth_rating:3,care_rating:3,cv:"Компактная вариегатная Bambino с миксами albo и aurea. Отличный выбор для начинающих коллекционеров вариегатов.",cg:"Средний рост. Регулярно даёт деток. Лист раз в 2-3 недели.",cc:"Влажность 60-65%, рассеянный свет, умеренный полив. Неприхотливее многих алоказий."},
@@ -273,8 +256,6 @@ const plants = [
     {num:119,category:"Alocasia",name:"Alocasia Zebrina Var (Albo)",pack_qty:5,pack_price:29947.5,unit_price:5989.5,adult_price:9500,corm_price:1900,demand_rf:4,vegetation_type:"Куст",leaf_size:"20-40 см",value_rating:5,rarity_rating:4,size_rating:3,growth_rating:3,care_rating:3,cv:"Зебрина Альбо.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:120,category:"Alocasia",name:"Alocasia Zebrina Var (Aurea)",pack_qty:5,pack_price:11025,unit_price:2205,adult_price:4500,corm_price:1000,demand_rf:3,vegetation_type:"Куст",leaf_size:"20-40 см",value_rating:5,rarity_rating:3,size_rating:3,growth_rating:3,care_rating:3,cv:"Зебрина Ауреа.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:121,category:"Alocasia",name:"Alocasia Zebrina Var (Mint)",pack_qty:10,pack_price:14808.15,unit_price:1480.81,adult_price:3500,corm_price:800,demand_rf:4,vegetation_type:"Куст",leaf_size:"20-40 см",value_rating:5,rarity_rating:3,size_rating:3,growth_rating:3,care_rating:3,cv:"Зебрина Минт.",cg:"Средний рост.",cc:"Влажность 60%."},
-
-    // === ANTHURIUM ===
     {num:122,category:"Anthurium",name:"Anoectochilus Black Swan Var (Albo)",pack_qty:10,pack_price:12793.5,unit_price:1279.35,adult_price:3500,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"5-10 см",value_rating:5,rarity_rating:4,size_rating:1,growth_rating:3,care_rating:3,cv:"НОВИНКА! Чёрный лебедь Альбо — драгоценная орхидея.",cg:"Средний рост.",cc:"Влажность 65-75%."},
     {num:123,category:"Anthurium",name:"Anoectochilus Black Swan Var (Aurea)",pack_qty:10,pack_price:15516,unit_price:1551.6,adult_price:4000,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"5-10 см",value_rating:5,rarity_rating:4,size_rating:1,growth_rating:3,care_rating:3,cv:"НОВИНКА! Чёрный лебедь Ауреа.",cg:"Средний рост.",cc:"Влажность 65-75%."},
     {num:124,category:"Anthurium",name:"Anoectochilus Roxburghii Var",pack_qty:50,pack_price:11745,unit_price:234.9,adult_price:1000,corm_price:0,demand_rf:3,vegetation_type:"Ползучее",leaf_size:"5-10 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:3,cv:"Роксбурги — популярная драгоценная орхидея.",cg:"Средний рост.",cc:"Влажность 65%."},
@@ -306,13 +287,9 @@ const plants = [
     {num:150,category:"Anthurium",name:"Anthurium Reflexinervium",pack_qty:30,pack_price:10611,unit_price:353.7,adult_price:1300,corm_price:0,demand_rf:3,vegetation_type:"Эпифит",leaf_size:"до 40 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:3,care_rating:2,cv:"Рефлексинервиум.",cg:"Средний рост.",cc:"Простой уход."},
     {num:151,category:"Anthurium",name:"Anthurium Vittariifolium Var",pack_qty:20,pack_price:11321.1,unit_price:566.06,adult_price:1800,corm_price:0,demand_rf:4,vegetation_type:"Эпифит",leaf_size:"до 120 см",value_rating:4,rarity_rating:3,size_rating:5,growth_rating:3,care_rating:3,cv:"Виттарифолиум вар.",cg:"Средний рост.",cc:"Влажность 60-65%."},
     {num:152,category:"Anthurium",name:"Anthurium Wonder Boy (Wonderboy X Michelle)",pack_qty:20,pack_price:11430,unit_price:571.5,adult_price:1800,corm_price:0,demand_rf:3,vegetation_type:"Эпифит",leaf_size:"до 45 см",value_rating:4,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:3,cv:"НОВИНКА! Вондер бой.",cg:"Средний рост.",cc:"Влажность 60%."},
-
-    // === COLOCASIA ===
     {num:153,category:"Colocasia",name:"Colocasia Esculenta Mojito",pack_qty:100,pack_price:10890,unit_price:108.9,adult_price:600,corm_price:200,demand_rf:5,vegetation_type:"Клубневое",leaf_size:"до 60 см",value_rating:5,rarity_rating:2,size_rating:3,growth_rating:4,care_rating:2,cv:"Мохито — очень популярна! От 2 шт в руки.",cg:"Быстрый рост.",cc:"Простой уход."},
     {num:154,category:"Colocasia",name:"Colocasia Siam Ruby",pack_qty:10,pack_price:14427,unit_price:1442.7,adult_price:3500,corm_price:800,demand_rf:4,vegetation_type:"Клубневое",leaf_size:"до 50 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:4,care_rating:2,cv:"Сиам Руби — рубиновые листья.",cg:"Быстрый рост.",cc:"Простой уход."},
     {num:155,category:"Colocasia",name:"Colocasia White Tiger",pack_qty:20,pack_price:10341,unit_price:517.05,adult_price:1600,corm_price:450,demand_rf:4,vegetation_type:"Клубневое",leaf_size:"до 50 см",value_rating:4,rarity_rating:3,size_rating:2,growth_rating:4,care_rating:2,cv:"Белый тигр.",cg:"Быстрый рост.",cc:"Простой уход."},
-
-    // === MONSTERA ===
     {num:156,category:"Monstera",name:"Monstera Adansonii Var",pack_qty:5,pack_price:7213.5,unit_price:1442.7,adult_price:3500,corm_price:0,demand_rf:5,vegetation_type:"Лиана",leaf_size:"до 30 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:2,cv:"НОВИНКА! Адансонии вар — популярна.",cg:"Средний рост.",cc:"Простой уход."},
     {num:157,category:"Monstera",name:"Monstera Bulbasaur",pack_qty:20,pack_price:19440,unit_price:972,adult_price:2500,corm_price:0,demand_rf:3,vegetation_type:"Лиана",leaf_size:"до 25 см",value_rating:4,rarity_rating:3,size_rating:1,growth_rating:3,care_rating:2,cv:"Бульбазавр — необычная форма.",cg:"Средний рост.",cc:"Простой уход."},
     {num:158,category:"Monstera",name:"Monstera Cream Cheese (Different Mother Plant)",pack_qty:20,pack_price:11430,unit_price:571.5,adult_price:1800,corm_price:0,demand_rf:5,vegetation_type:"Лиана",leaf_size:"до 40 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:2,cv:"Крим чиз — популярный вариегат.",cg:"Средний рост.",cc:"Простой уход."},
@@ -339,8 +316,6 @@ const plants = [
     {num:179,category:"Monstera",name:"Monstera Var (Full Mint) (Different Mother Plant)",pack_qty:10,pack_price:26406,unit_price:2640.6,adult_price:5500,corm_price:0,demand_rf:5,vegetation_type:"Лиана",leaf_size:"до 60 см",value_rating:5,rarity_rating:4,size_rating:3,growth_rating:3,care_rating:3,cv:"Фулл Минт — мятная монстера.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:180,category:"Monstera",name:"Monstera Var (Mint) (Green Background)",pack_qty:20,pack_price:9796.5,unit_price:489.83,adult_price:1600,corm_price:0,demand_rf:5,vegetation_type:"Лиана",leaf_size:"до 60 см",value_rating:5,rarity_rating:3,size_rating:3,growth_rating:3,care_rating:2,cv:"Минт на зелёном фоне.",cg:"Средний рост.",cc:"Простой уход."},
     {num:181,category:"Monstera",name:"Monstera White Mint (Grounding White)",pack_qty:50,pack_price:15097.5,unit_price:301.95,adult_price:1200,corm_price:0,demand_rf:4,vegetation_type:"Лиана",leaf_size:"до 50 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:3,care_rating:2,cv:"Белый минт.",cg:"Средний рост.",cc:"Простой уход."},
-
-    // === OTHER (прочие) ===
     {num:182,category:"Other",name:"Ardisia Black Blood",pack_qty:20,pack_price:12519,unit_price:625.95,adult_price:2000,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"5-10 см",value_rating:4,rarity_rating:3,size_rating:1,growth_rating:2,care_rating:3,cv:"Ардизия Чёрная кровь.",cg:"Медленный рост.",cc:"Влажность 65%."},
     {num:183,category:"Other",name:"Ardisia SP Turtle Back",pack_qty:20,pack_price:19053,unit_price:952.65,adult_price:2800,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"5-8 см",value_rating:4,rarity_rating:4,size_rating:1,growth_rating:2,care_rating:3,cv:"Черепаший панцирь — редкая ардизия.",cg:"Медленный рост.",cc:"Влажность 70%+."},
     {num:184,category:"Other",name:"Ardisia sp. Vietnam",pack_qty:20,pack_price:11974.5,unit_price:598.73,adult_price:1800,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"5-10 см",value_rating:4,rarity_rating:3,size_rating:1,growth_rating:2,care_rating:3,cv:"Ардизия Вьетнам.",cg:"Медленный рост.",cc:"Влажность 65%."},
@@ -374,8 +349,6 @@ const plants = [
     {num:212,category:"Other",name:"Phyllotaenium Lindenii Var",pack_qty:5,pack_price:19057.5,unit_price:3811.5,adult_price:7000,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"15-25 см",value_rating:4,rarity_rating:4,size_rating:2,growth_rating:3,care_rating:3,cv:"Филлотениум Линдении вар.",cg:"Средний рост.",cc:"Влажность 65%."},
     {num:213,category:"Other",name:"Schismatoglottis Wallichii Var",pack_qty:10,pack_price:14427,unit_price:1442.7,adult_price:3500,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"10-20 см",value_rating:4,rarity_rating:3,size_rating:1,growth_rating:3,care_rating:3,cv:"Шизматоглоттис вар.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:214,category:"Other",name:"Scindapsus Exotica Variegated",pack_qty:20,pack_price:10449.9,unit_price:522.5,adult_price:1600,corm_price:0,demand_rf:4,vegetation_type:"Лиана",leaf_size:"до 25 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Сциндапсус Экзотика вар.",cg:"Средний рост.",cc:"Простой уход."},
-
-    // === PHILODENDRON ===
     {num:215,category:"Philodendron",name:"Philodendron Angela Aurea",pack_qty:5,pack_price:32670,unit_price:6534,adult_price:10000,corm_price:0,demand_rf:3,vegetation_type:"Лиана",leaf_size:"до 40 см",value_rating:5,rarity_rating:4,size_rating:2,growth_rating:3,care_rating:3,cv:"Ангела Ауреа.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:216,category:"Philodendron",name:"Philodendron Atabapoense Pink Var",pack_qty:5,pack_price:32670,unit_price:6534,adult_price:10000,corm_price:0,demand_rf:4,vegetation_type:"Лиана",leaf_size:"до 50 см",value_rating:5,rarity_rating:5,size_rating:3,growth_rating:3,care_rating:3,cv:"НОВИНКА! Атабапоенсе Пинк.",cg:"Средний рост.",cc:"Влажность 65%."},
     {num:217,category:"Philodendron",name:"Philodendron Autumn Queen",pack_qty:50,pack_price:7965,unit_price:159.3,adult_price:700,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"до 30 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:3,care_rating:2,cv:"Осенняя королева.",cg:"Средний рост.",cc:"Простой уход."},
@@ -439,12 +412,8 @@ const plants = [
     {num:275,category:"Philodendron",name:"Philodendron White Princess Var (Aurea)",pack_qty:5,pack_price:54450,unit_price:10890,adult_price:16000,corm_price:0,demand_rf:5,vegetation_type:"Куст",leaf_size:"до 30 см",value_rating:5,rarity_rating:5,size_rating:2,growth_rating:3,care_rating:3,cv:"Уайт Принцесс Ауреа.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:276,category:"Philodendron",name:"Philodendron White Wizard",pack_qty:100,pack_price:8370,unit_price:83.7,adult_price:500,corm_price:0,demand_rf:5,vegetation_type:"Куст",leaf_size:"до 30 см",value_rating:5,rarity_rating:1,size_rating:2,growth_rating:3,care_rating:2,cv:"Белый волшебник.",cg:"Средний рост.",cc:"Простой уход."},
     {num:277,category:"Philodendron",name:"Philodendron White Wizard Var (Aurea)",pack_qty:10,pack_price:108900,unit_price:10890,adult_price:16000,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"до 30 см",value_rating:5,rarity_rating:5,size_rating:2,growth_rating:3,care_rating:3,cv:"Уайт Визард Ауреа.",cg:"Средний рост.",cc:"Влажность 60%."},
-
-    // === SPATHIPHYLLUM ===
     {num:278,category:"Spathiphyllum",name:"Spathiphyllum Albo Var",pack_qty:30,pack_price:18941.85,unit_price:631.4,adult_price:2000,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"до 40 см",value_rating:4,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:2,cv:"Спатифиллум Альбо вар.",cg:"Средний рост.",cc:"Простой уход."},
     {num:279,category:"Spathiphyllum",name:"Spathiphyllum Aurea Var",pack_qty:30,pack_price:12244.5,unit_price:408.15,adult_price:1500,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"до 40 см",value_rating:4,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:2,cv:"НОВИНКА! Спатифиллум Ауреа вар.",cg:"Средний рост.",cc:"Простой уход."},
-
-    // === АРОИДНЫЕ (доп. лист) ===
     {num:280,category:"Alocasia",name:"Alocasia Antoro Velvet",pack_qty:50,pack_price:6705,unit_price:134.1,adult_price:600,corm_price:200,demand_rf:3,vegetation_type:"Куст",leaf_size:"10-20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Анторо Вельвет — от 2 шт в руки.",cg:"Средний рост.",cc:"Простой уход."},
     {num:281,category:"Alocasia",name:"Alocasia Chaii",pack_qty:50,pack_price:9855,unit_price:197.1,adult_price:800,corm_price:250,demand_rf:3,vegetation_type:"Куст",leaf_size:"10-20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Чайи — от 2 шт в руки.",cg:"Средний рост.",cc:"Простой уход."},
     {num:282,category:"Alocasia",name:"Alocasia Nebula Imperialis / Elaine",pack_qty:50,pack_price:4815,unit_price:96.3,adult_price:500,corm_price:150,demand_rf:3,vegetation_type:"Куст",leaf_size:"10-20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Небула Империалис.",cg:"Средний рост.",cc:"Простой уход."},
@@ -452,8 +421,6 @@ const plants = [
     {num:284,category:"Alocasia",name:"Alocasia Princeps",pack_qty:50,pack_price:6705,unit_price:134.1,adult_price:600,corm_price:200,demand_rf:3,vegetation_type:"Куст",leaf_size:"15-25 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:3,care_rating:2,cv:"Принцепс.",cg:"Средний рост.",cc:"Простой уход."},
     {num:285,category:"Colocasia",name:"Colocasia Heterochroma Dark Shadows",pack_qty:50,pack_price:7335,unit_price:146.7,adult_price:700,corm_price:200,demand_rf:3,vegetation_type:"Клубневое",leaf_size:"до 50 см",value_rating:4,rarity_rating:3,size_rating:2,growth_rating:4,care_rating:2,cv:"Тёмные тени.",cg:"Быстрый рост.",cc:"Простой уход."},
     {num:286,category:"Colocasia",name:"Colocasia Mask",pack_qty:50,pack_price:4185,unit_price:83.7,adult_price:450,corm_price:150,demand_rf:3,vegetation_type:"Клубневое",leaf_size:"до 40 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:4,care_rating:2,cv:"Маска.",cg:"Быстрый рост.",cc:"Простой уход."},
-
-    // === КАЛАДИУМЫ ===
     {num:287,category:"Caladium",name:"Caladium Agate",pack_qty:50,pack_price:13005,unit_price:260.1,adult_price:1000,corm_price:300,demand_rf:3,vegetation_type:"Клубневое",leaf_size:"15-30 см",value_rating:4,rarity_rating:3,size_rating:2,growth_rating:4,care_rating:2,cv:"Агат.",cg:"Быстрый рост в сезон.",cc:"Простой уход, период покоя."},
     {num:288,category:"Caladium",name:"Caladium Black King Kong",pack_qty:50,pack_price:4185,unit_price:83.7,adult_price:450,corm_price:150,demand_rf:3,vegetation_type:"Клубневое",leaf_size:"15-30 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:4,care_rating:2,cv:"Чёрный Кинг-Конг.",cg:"Быстрый рост.",cc:"Простой уход."},
     {num:289,category:"Caladium",name:"Caladium Brampani",pack_qty:50,pack_price:8595,unit_price:171.9,adult_price:700,corm_price:250,demand_rf:3,vegetation_type:"Клубневое",leaf_size:"15-30 см",value_rating:4,rarity_rating:3,size_rating:2,growth_rating:4,care_rating:2,cv:"Брампани.",cg:"Быстрый рост.",cc:"Простой уход."},
@@ -465,8 +432,6 @@ const plants = [
     {num:295,category:"Caladium",name:"Caladium Halabala",pack_qty:50,pack_price:9855,unit_price:197.1,adult_price:800,corm_price:250,demand_rf:3,vegetation_type:"Клубневое",leaf_size:"15-30 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:4,care_rating:2,cv:"Халабала.",cg:"Быстрый рост.",cc:"Простой уход."},
     {num:296,category:"Caladium",name:"Caladium Red Apple",pack_qty:50,pack_price:6705,unit_price:134.1,adult_price:600,corm_price:200,demand_rf:4,vegetation_type:"Клубневое",leaf_size:"15-30 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:4,care_rating:2,cv:"Красное яблоко.",cg:"Быстрый рост.",cc:"Простой уход."},
     {num:297,category:"Caladium",name:"Caladium White Christmas",pack_qty:50,pack_price:4185,unit_price:83.7,adult_price:450,corm_price:150,demand_rf:4,vegetation_type:"Клубневое",leaf_size:"15-30 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:4,care_rating:2,cv:"Белое Рождество.",cg:"Быстрый рост.",cc:"Простой уход."},
-
-    // === ПАПОРОТНИКИ ===
     {num:298,category:"Fern",name:"Cibotium Barometz",pack_qty:50,pack_price:12375,unit_price:247.5,adult_price:1000,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"до 80 см",value_rating:4,rarity_rating:3,size_rating:3,growth_rating:2,care_rating:3,cv:"Циботиум Баромец.",cg:"Медленный рост.",cc:"Влажность 60-65%."},
     {num:299,category:"Fern",name:"Phlebodium Aureum",pack_qty:50,pack_price:5445,unit_price:108.9,adult_price:500,corm_price:0,demand_rf:3,vegetation_type:"Эпифит",leaf_size:"до 40 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:3,care_rating:2,cv:"Флебодиум золотистый.",cg:"Средний рост.",cc:"Простой уход."},
     {num:300,category:"Fern",name:"Nephrolepis Exaltata Marisa",pack_qty:50,pack_price:4815,unit_price:96.3,adult_price:450,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"до 50 см",value_rating:3,rarity_rating:2,size_rating:2,growth_rating:3,care_rating:2,cv:"Нефролепис Мариса.",cg:"Средний рост.",cc:"Простой уход."},
@@ -482,8 +447,6 @@ const plants = [
     {num:310,category:"Fern",name:"Platycerium Wandae",pack_qty:50,pack_price:6075,unit_price:121.5,adult_price:600,corm_price:0,demand_rf:4,vegetation_type:"Эпифит",leaf_size:"до 120 см",value_rating:5,rarity_rating:3,size_rating:5,growth_rating:2,care_rating:3,cv:"Платицериум Ванда — гигант.",cg:"Медленный рост.",cc:"Влажность 65%."},
     {num:311,category:"Fern",name:"Lecanopteris Crustacea",pack_qty:50,pack_price:23287.5,unit_price:465.75,adult_price:1500,corm_price:0,demand_rf:3,vegetation_type:"Эпифит",leaf_size:"до 20 см",value_rating:4,rarity_rating:4,size_rating:1,growth_rating:2,care_rating:3,cv:"Леканоптерис Крустацеа.",cg:"Медленный рост.",cc:"Влажность 65%."},
     {num:312,category:"Fern",name:"Lecanopteris Luzon",pack_qty:100,pack_price:34875,unit_price:348.75,adult_price:1200,corm_price:0,demand_rf:3,vegetation_type:"Эпифит",leaf_size:"до 15 см",value_rating:4,rarity_rating:4,size_rating:1,growth_rating:2,care_rating:3,cv:"Леканоптерис Лузон.",cg:"Медленный рост.",cc:"Влажность 65%."},
-
-    // === ХИЩНИКИ ===
     {num:313,category:"Carnivorous",name:"Dionaea Muscipula Red Piranha",pack_qty:100,pack_price:10890,unit_price:108.9,adult_price:600,corm_price:0,demand_rf:4,vegetation_type:"Розетка",leaf_size:"ловушки 3-5 см",value_rating:5,rarity_rating:3,size_rating:1,growth_rating:3,care_rating:4,cv:"Красная пиранья — сорт венериной мухоловки.",cg:"Средний рост, зимний покой.",cc:"Дистиллированная вода, яркое солнце."},
     {num:314,category:"Carnivorous",name:"Dionaea Muscipula Jaws",pack_qty:100,pack_price:10890,unit_price:108.9,adult_price:600,corm_price:0,demand_rf:4,vegetation_type:"Розетка",leaf_size:"ловушки 3-5 см",value_rating:5,rarity_rating:3,size_rating:1,growth_rating:3,care_rating:4,cv:"Челюсти — популярный сорт.",cg:"Средний рост.",cc:"Дистиллированная вода, яркое солнце."},
     {num:315,category:"Carnivorous",name:"Drosera Aliciae",pack_qty:100,pack_price:13410,unit_price:134.1,adult_price:600,corm_price:0,demand_rf:4,vegetation_type:"Розетка",leaf_size:"5-10 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:3,cv:"Росянка Алиции.",cg:"Средний рост.",cc:"Дистиллированная вода."},
@@ -495,8 +458,6 @@ const plants = [
     {num:321,category:"Carnivorous",name:"Sarracenia Maroon",pack_qty:100,pack_price:10890,unit_price:108.9,adult_price:600,corm_price:0,demand_rf:5,vegetation_type:"Куст",leaf_size:"кувшины до 40 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:3,cv:"Саррацения Марун.",cg:"Средний рост.",cc:"Яркое солнце, дистиллированная вода."},
     {num:322,category:"Carnivorous",name:"Sarracenia Leucophylla",pack_qty:100,pack_price:21600,unit_price:216,adult_price:800,corm_price:0,demand_rf:5,vegetation_type:"Куст",leaf_size:"кувшины до 60 см",value_rating:5,rarity_rating:3,size_rating:3,growth_rating:3,care_rating:3,cv:"Саррацения белая.",cg:"Средний рост.",cc:"Яркое солнце, дистиллированная вода."},
     {num:323,category:"Carnivorous",name:"Sarracenia Judith Hindle",pack_qty:100,pack_price:10890,unit_price:108.9,adult_price:600,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"кувшины до 50 см",value_rating:5,rarity_rating:3,size_rating:3,growth_rating:3,care_rating:3,cv:"Саррацения Джудит Хиндл.",cg:"Средний рост.",cc:"Яркое солнце, дистиллированная вода."},
-
-    // === АГЛАШИ (Aglaonema + Syngonium) ===
     {num:324,category:"Aglaonema",name:"Aglaonema Light Pink",pack_qty:100,pack_price:12150,unit_price:121.5,adult_price:600,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"15-25 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:3,care_rating:2,cv:"Светло-розовая аглаонема.",cg:"Средний рост.",cc:"Очень простой уход."},
     {num:325,category:"Aglaonema",name:"Aglaonema Pictum Tricolor (Angustifolia)",pack_qty:100,pack_price:12150,unit_price:121.5,adult_price:600,corm_price:0,demand_rf:5,vegetation_type:"Куст",leaf_size:"10-20 см",value_rating:5,rarity_rating:3,size_rating:1,growth_rating:3,care_rating:2,cv:"Пиктум Триколор — популярна.",cg:"Средний рост.",cc:"Простой уход."},
     {num:326,category:"Aglaonema",name:"Aglaonema Red Vein",pack_qty:100,pack_price:9630,unit_price:96.3,adult_price:500,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"15-25 см",value_rating:4,rarity_rating:2,size_rating:2,growth_rating:3,care_rating:2,cv:"Красные жилки.",cg:"Средний рост.",cc:"Очень простой уход."},
@@ -507,91 +468,34 @@ const plants = [
     {num:331,category:"Syngonium",name:"Syngonium Tricolor",pack_qty:100,pack_price:9630,unit_price:96.3,adult_price:500,corm_price:0,demand_rf:5,vegetation_type:"Лиана",leaf_size:"до 20 см",value_rating:5,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Сингониум Триколор.",cg:"Средний рост.",cc:"Простой уход."},
     {num:332,category:"Syngonium",name:"Syngonium Pink Perfection",pack_qty:100,pack_price:9630,unit_price:96.3,adult_price:500,corm_price:0,demand_rf:5,vegetation_type:"Лиана",leaf_size:"до 20 см",value_rating:5,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Пинк Перфекшн.",cg:"Средний рост.",cc:"Простой уход."},
     {num:333,category:"Syngonium",name:"Syngonium Snow White",pack_qty:100,pack_price:7110,unit_price:71.1,adult_price:400,corm_price:0,demand_rf:4,vegetation_type:"Лиана",leaf_size:"до 20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Сноу Уайт.",cg:"Средний рост.",cc:"Простой уход."},
-    {num:334,category:"Syngonium",name:"Syngonium Babudi",pack_qty:100,pack_price:8370,unit_price:83.7,adult_price:500,corm_price:0,demand_rf:3,vegetation_type:"Лиана",leaf_size:"до 20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Бабуди.",cg:"Средний рост.",cc:"Простой уход."},
+    {num:334,category:"Syngonium",name:"Syngonium Babudi",pack_qty:100,pack_price:8370,unit_price:83.7,adult_price:500,corm_price:0,demand_rf:3,vegetation_type:"Лиана",leaf_size:"до 20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Бабуди.",cg:"Средний рост.",cc:"Простой уход."}
 ];
 
-// Расчёт итога
 plants.forEach(p=>{p.total=p.value_rating+p.demand_rf+p.rarity_rating+p.size_rating+p.growth_rating+(5-p.care_rating);});
 
-
-// ==================== КОРЗИНА ====================
 let cart = [];
 const CART_KEY = 'plantCart2025';
-
-function loadCart() {
-    try {
-        const saved = localStorage.getItem(CART_KEY);
-        if (saved) cart = JSON.parse(saved);
-        else cart = [];
-    } catch(e){ cart = []; }
-}
-function saveCart() {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    updateCartFloating();
-}
-function addToCart(idx) {
-    const existing = cart.find(item => item.idx === idx);
-    if (existing) {
-        existing.qty += 1;
-    } else {
-        cart.push({ idx: idx, qty: 1 });
-    }
-    saveCart();
-    renderCartItems();
-    render(); // обновить кнопки в таблице
-}
-function removeFromCart(idx) {
-    cart = cart.filter(item => item.idx !== idx);
-    saveCart();
-    renderCartItems();
-    render();
-}
-function getCartCount() {
-    return cart.reduce((sum, item) => sum + item.qty, 0);
-}
-function getCartTotal() {
-    return cart.reduce((total, item) => total + (plants[item.idx]?.unit_price || 0) * item.qty, 0);
-}
-function updateCartFloating() {
-    const count = getCartCount();
-    const total = getCartTotal();
-    document.getElementById('cartFloatingInfo').textContent = `${count} шт. / ${total.toFixed(0)} р.`;
-}
+function loadCart() { try { const saved = localStorage.getItem(CART_KEY); if (saved) cart = JSON.parse(saved); else cart = []; } catch(e){ cart = []; } }
+function saveCart() { localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartFloating(); }
+function addToCart(idx) { const existing = cart.find(item => item.idx === idx); if (existing) { existing.qty += 1; } else { cart.push({ idx: idx, qty: 1 }); } saveCart(); renderCartItems(); render(); }
+function removeFromCart(idx) { cart = cart.filter(item => item.idx !== idx); saveCart(); renderCartItems(); render(); }
+function getCartCount() { return cart.reduce((sum, item) => sum + item.qty, 0); }
+function getCartTotal() { return cart.reduce((total, item) => total + (plants[item.idx]?.unit_price || 0) * item.qty, 0); }
+function updateCartFloating() { document.getElementById('cartFloatingInfo').textContent = `${getCartCount()} шт. / ${getCartTotal().toFixed(0)} р.`; }
 function renderCartItems() {
-    const container = document.getElementById('cartList');
-    const totalEl = document.getElementById('cartTotal');
-    if (cart.length === 0) {
-        container.innerHTML = '<div class="empty-cart">Корзина пуста</div>';
-        totalEl.textContent = '';
-    } else {
-        let html = '';
-        cart.forEach(item => {
-            const p = plants[item.idx];
-            if (!p) return;
-            html += `<div class="cart-item">
-                <span class="cart-item-name">${p.name}</span>
-                <span class="cart-item-qty">${item.qty} шт.</span>
-                <span class="cart-item-price">${(p.unit_price * item.qty).toFixed(0)} р.</span>
-                <button onclick="removeFromCart(${item.idx})">✕</button>
-            </div>`;
-        });
-        container.innerHTML = html;
-        totalEl.textContent = `Итого: ${getCartTotal().toFixed(0)} р.`;
+    const container = document.getElementById('cartList'), totalEl = document.getElementById('cartTotal');
+    if (cart.length === 0) { container.innerHTML = '<div class="empty-cart">Корзина пуста</div>'; totalEl.textContent = ''; }
+    else {
+        let html = ''; cart.forEach(item => { const p = plants[item.idx]; if (!p) return;
+            html += `<div class="cart-item"><span class="cart-item-name">${p.name}</span><span class="cart-item-qty">${item.qty} шт.</span><span class="cart-item-price">${(p.unit_price * item.qty).toFixed(0)} р.</span><button onclick="removeFromCart(${item.idx})">✕</button></div>`; });
+        container.innerHTML = html; totalEl.textContent = `Итого: ${getCartTotal().toFixed(0)} р.`;
     }
-    updateCartFloating();
 }
-
-function toggleCartModal(show) {
-    document.getElementById('cartModal').classList.toggle('on', show);
-    if (show) renderCartItems();
-}
+function toggleCartModal(show) { document.getElementById('cartModal').classList.toggle('on', show); if (show) renderCartItems(); }
 document.getElementById('cartFloating').addEventListener('click', () => toggleCartModal(true));
 document.getElementById('closeCartBtn').addEventListener('click', () => toggleCartModal(false));
-window.addEventListener('click', (e) => {
-    if (e.target === document.getElementById('cartModal')) toggleCartModal(false);
-});
+window.addEventListener('click', (e) => { if (e.target === document.getElementById('cartModal')) toggleCartModal(false); });
 
-// ==================== ОСНОВНОЙ ИНТЕРФЕЙС ====================
 function openM(idx){const d=plants[idx];if(!d)return;document.getElementById('mtitle').textContent=d.name;
 let body=`<div class="mtags"><span>📦 Мин.заказ: ${d.pack_qty} шт.</span><span>💵 Стоимость партии: ${d.pack_price.toFixed(2).replace('.',',')} ₽</span><span>💰 Цена/шт: ${d.unit_price.toFixed(2).replace('.',',')} ₽</span><span>🌿 ${d.vegetation_type}</span><span>📏 Лист: ${d.leaf_size}</span><span>💎 Взрослое: ~${d.adult_price} ₽</span><span>🥔 Клубень/детка: ~${d.corm_price||'—'} ₽</span><span>🇷🇺 Спрос РФ: ${d.demand_rf}/5</span></div>`;
 body+=`<div class="msec"><div class="mstitle">💡 Ценность и востребованность</div><div class="mtext">${d.cv}</div></div>`;
@@ -635,7 +539,6 @@ document.getElementById('sortDir').addEventListener('change',e=>{sortDir=e.targe
 document.getElementById('search').addEventListener('input',e=>{searchText=e.target.value;render();});
 document.getElementById('filterCat').addEventListener('change',e=>{filterCat=e.target.value;render();});
 document.querySelectorAll('thead th[data-col]').forEach(th=>{th.addEventListener('click',()=>{const col=th.dataset.col;if(sortCol===col)sortDir=sortDir==='desc'?'asc':'desc';else{sortCol=col;sortDir='desc';}document.getElementById('sortCol').value=sortCol;document.getElementById('sortDir').value=sortDir;render();});});
-// Инициализация
 loadCart();
 render();
 updateCartFloating();
