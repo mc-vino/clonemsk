@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Закупки микроклонов · апрель · Полный каталог</title>
+    <title>Закупки микроклонов · апрель · Корзина</title>
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
         body{background:#f4f6f1;color:#1a1c16;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:13px;min-height:100vh}
@@ -35,6 +35,9 @@
         td{padding:7px 6px;vertical-align:middle;border-bottom:1px solid #d8dbd2;border-right:1px solid #e2e4dc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1c16}
         td.name-cell{white-space:normal;word-break:break-word;line-height:1.35;cursor:pointer;font-weight:600;font-size:12px;max-width:240px}
         td.name-cell:hover{color:#7a5c1e;text-decoration:underline}
+        .cart-btn{background:#3b4a38;color:#e0c76a;border:1px solid #506050;padding:4px 8px;border-radius:4px;cursor:pointer;font-family:monospace;font-size:10px;transition:0.2s;white-space:nowrap}
+        .cart-btn:hover{background:#506050;color:#fff}
+        .cart-btn.in-cart{background:#e0c76a;color:#1a1c16;border-color:#e0c76a}
         .rc{font-family:monospace;font-size:11px;color:#6a7565;text-align:center;font-weight:700}
         .nc{font-family:monospace;color:#6a7565;font-size:10px;text-align:center}
         .pc{font-family:monospace;font-size:11px;font-weight:700;color:#7a5c1e;text-align:right}
@@ -67,6 +70,25 @@
         ::-webkit-scrollbar-track{background:#f4f6f1}
         ::-webkit-scrollbar-thumb{background:#bcc4b8;border-radius:3px}
         col.cnum{width:36px}col.cname{width:220px}col.cat{width:90px}col.cprice{width:65px}col.cadult{width:70px}col.ccorm{width:75px}col.cdemrf{width:55px}col.cval{width:55px}col.crare{width:55px}col.csize{width:55px}col.cveg{width:75px}col.cleaf{width:70px}col.cgrw{width:70px}col.ccare{width:65px}col.ctotal{width:55px}
+        /* Стили корзины */
+        #cartFloating{position:fixed;bottom:20px;right:20px;background:#2b3529;color:#e0c76a;border-radius:50px;padding:12px 22px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);cursor:pointer;z-index:300;transition:0.2s}
+        #cartFloating:hover{background:#3a4d38}
+        #cartFloating .cart-icon{font-size:22px}
+        #cartFloating .cart-info{font-family:monospace;font-weight:700;font-size:14px}
+        #cartModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;align-items:center;justify-content:center;padding:16px}
+        #cartModal.on{display:flex}
+        #cartWindow{background:#f2f4ef;border-radius:12px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 18px 55px rgba(0,0,0,0.4)}
+        #cartWindow h3{padding:18px 20px 12px;margin:0;border-bottom:1px solid #c8ccc2;font-size:16px}
+        .cart-list{padding:12px 20px}
+        .cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e2e4dc}
+        .cart-item-name{font-weight:600;flex:2}
+        .cart-item-qty{font-family:monospace;margin:0 15px}
+        .cart-item-price{font-family:monospace;font-weight:700;color:#7a5c1e}
+        .cart-item button{background:none;border:1px solid #c8ccc2;padding:2px 8px;border-radius:4px;cursor:pointer;font-family:monospace;color:#8a3030}
+        .cart-item button:hover{background:#f8d8d8}
+        .cart-total{padding:12px 20px;font-weight:700;text-align:right;border-top:2px solid #c8ccc2;font-family:monospace;font-size:15px}
+        .empty-cart{text-align:center;padding:30px;color:#6a7565}
+        #cartWindow button.close-cart{background:#e0e4da;border:1px solid #c8ccc2;padding:6px 18px;border-radius:6px;margin:10px 20px 15px;cursor:pointer;font-weight:600}
     </style>
 </head>
 <body>
@@ -87,17 +109,47 @@
 <div id="twrap">
     <table id="tbl">
         <colgroup><col class="cnum"><col class="cname"><col class="cat"><col class="cprice"><col class="cadult"><col class="ccorm"><col class="cdemrf"><col class="cval"><col class="crare"><col class="csize"><col class="cveg"><col class="cleaf"><col class="cgrw"><col class="ccare"><col class="ctotal"></colgroup>
-        <thead><tr><th data-col="num">№</th><th data-col="name">Название</th><th data-col="category">Категория</th><th data-col="unit_price">Цена/шт</th><th data-col="adult_price">Взрослое BYN</th><th data-col="corm_price">Клубень/детка</th><th data-col="demand_rf">Спрос РФ</th><th data-col="value_rating">Ценность</th><th data-col="rarity_rating">Редкость</th><th data-col="size_rating">Размер</th><th data-col="vegetation_type">Тип вегетации</th><th data-col="leaf_size">Лист</th><th data-col="growth_rating">Темп роста</th><th data-col="care_rating">Уход</th><th data-col="total">Итог</th></tr></thead>
+        <thead><tr><th>🛒</th><th data-col="num">№</th><th data-col="name">Название</th><th data-col="category">Категория</th><th data-col="unit_price">Цена/шт</th><th data-col="adult_price">Взрослое BYN</th><th data-col="corm_price">Клубень/детка</th><th data-col="demand_rf">Спрос РФ</th><th data-col="value_rating">Ценность</th><th data-col="rarity_rating">Редкость</th><th data-col="size_rating">Размер</th><th data-col="vegetation_type">Тип вегетации</th><th data-col="leaf_size">Лист</th><th data-col="growth_rating">Темп роста</th><th data-col="care_rating">Уход</th><th data-col="total">Итог</th></tr></thead>
         <tbody id="tbody"></tbody>
     </table>
     <div id="nores" class="nores" style="display:none">Ничего не найдено</div>
 </div>
+
+<!-- Плавающая кнопка корзины -->
+<div id="cartFloating">
+    <span class="cart-icon">🛒</span>
+    <span class="cart-info" id="cartFloatingInfo">0 шт. / 0 р.</span>
+</div>
+
+<!-- Модальное окно корзины -->
+<div id="cartModal">
+    <div id="cartWindow">
+        <h3>🛒 Корзина закупки</h3>
+        <div class="cart-list" id="cartList"></div>
+        <div class="cart-total" id="cartTotal"></div>
+        <button class="close-cart" id="closeCartBtn">Закрыть</button>
+    </div>
+</div>
+
+<!-- Модальное окно деталей растения -->
 <div id="mbg" onclick="closeMBg(event)"><div id="modal"><div id="mhdr"><div id="mtitle"></div><button id="mclose" onclick="closeM()">✕</button></div><div id="mbody"></div></div></div>
+
 <script>
 const SZ={1:'Мини',2:'Компакт',3:'Средний',4:'Крупный',5:'Гигант'},CA={1:'Оч.просто',2:'Просто',3:'Средне',4:'Сложно',5:'Оч.сложно'},GR={1:'Оч.медл.',2:'Медленный',3:'Средний',4:'Быстрый',5:'Оч.быстрый'};
 function pips(v){let h='';for(let i=1;i<=5;i++)h+='<span class="pip'+(i<=v?' on':'')+'"></span>';return h;}
 
 // ==================== ДАННЫЕ РАСТЕНИЙ ====================
+const plants = [
+    // (тот же огромный массив данных, что и в предыдущем ответе, полностью сохранён)
+    {num:1,category:"Alocasia",name:"Alocasia Aegis Mint Var",pack_qty:5,pack_price:38931.75,unit_price:7786.35,adult_price:12000,corm_price:2500,demand_rf:4,vegetation_type:"Куст",leaf_size:"15-30 см",value_rating:5,rarity_rating:5,size_rating:2,growth_rating:3,care_rating:4,cv:"Редкая вариегатная алоказия с мятным оттенком. Высокая коллекционная ценность. Спрос стабильный среди продвинутых коллекционеров.",cg:"Средний темп роста. Новый лист раз в 3-5 недель. Требует стабильных условий для сохранения вариегатности.",cc:"Влажность 65-75%, яркий рассеянный свет, боится переувлажнения и холодных сквозняков. Чувствительна к паутинному клещу."},
+    // ... все остальные 333 позиции ...
+    {num:334,category:"Syngonium",name:"Syngonium Babudi",pack_qty:100,pack_price:8370,unit_price:83.7,adult_price:500,corm_price:0,demand_rf:3,vegetation_type:"Лиана",leaf_size:"до 20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Бабуди.",cg:"Средний рост.",cc:"Простой уход."},
+];
+// К сожалению, из-за ограничений длины ответа я не могу вставить весь массив целиком, но он точно такой же, как в предыдущем ответе.
+// Пожалуйста, скопируйте массив plants из предыдущего сообщения.
+// (Здесь для примера оставлены только первая и последняя запись, в реальном коде должен быть полный список)
+// Убедитесь, что переменная plants содержит все 334 элемента, как в исходном коде.
+
 const plants = [
     // === ALOCASIA (основной лист) ===
     {num:1,category:"Alocasia",name:"Alocasia Aegis Mint Var",pack_qty:5,pack_price:38931.75,unit_price:7786.35,adult_price:12000,corm_price:2500,demand_rf:4,vegetation_type:"Куст",leaf_size:"15-30 см",value_rating:5,rarity_rating:5,size_rating:2,growth_rating:3,care_rating:4,cv:"Редкая вариегатная алоказия с мятным оттенком. Высокая коллекционная ценность. Спрос стабильный среди продвинутых коллекционеров.",cg:"Средний темп роста. Новый лист раз в 3-5 недель. Требует стабильных условий для сохранения вариегатности.",cc:"Влажность 65-75%, яркий рассеянный свет, боится переувлажнения и холодных сквозняков. Чувствительна к паутинному клещу."},
@@ -461,7 +513,85 @@ const plants = [
 // Расчёт итога
 plants.forEach(p=>{p.total=p.value_rating+p.demand_rf+p.rarity_rating+p.size_rating+p.growth_rating+(5-p.care_rating);});
 
-// ==================== ЛОГИКА ИНТЕРФЕЙСА ====================
+
+// ==================== КОРЗИНА ====================
+let cart = [];
+const CART_KEY = 'plantCart2025';
+
+function loadCart() {
+    try {
+        const saved = localStorage.getItem(CART_KEY);
+        if (saved) cart = JSON.parse(saved);
+        else cart = [];
+    } catch(e){ cart = []; }
+}
+function saveCart() {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartFloating();
+}
+function addToCart(idx) {
+    const existing = cart.find(item => item.idx === idx);
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({ idx: idx, qty: 1 });
+    }
+    saveCart();
+    renderCartItems();
+    render(); // обновить кнопки в таблице
+}
+function removeFromCart(idx) {
+    cart = cart.filter(item => item.idx !== idx);
+    saveCart();
+    renderCartItems();
+    render();
+}
+function getCartCount() {
+    return cart.reduce((sum, item) => sum + item.qty, 0);
+}
+function getCartTotal() {
+    return cart.reduce((total, item) => total + (plants[item.idx]?.unit_price || 0) * item.qty, 0);
+}
+function updateCartFloating() {
+    const count = getCartCount();
+    const total = getCartTotal();
+    document.getElementById('cartFloatingInfo').textContent = `${count} шт. / ${total.toFixed(0)} р.`;
+}
+function renderCartItems() {
+    const container = document.getElementById('cartList');
+    const totalEl = document.getElementById('cartTotal');
+    if (cart.length === 0) {
+        container.innerHTML = '<div class="empty-cart">Корзина пуста</div>';
+        totalEl.textContent = '';
+    } else {
+        let html = '';
+        cart.forEach(item => {
+            const p = plants[item.idx];
+            if (!p) return;
+            html += `<div class="cart-item">
+                <span class="cart-item-name">${p.name}</span>
+                <span class="cart-item-qty">${item.qty} шт.</span>
+                <span class="cart-item-price">${(p.unit_price * item.qty).toFixed(0)} р.</span>
+                <button onclick="removeFromCart(${item.idx})">✕</button>
+            </div>`;
+        });
+        container.innerHTML = html;
+        totalEl.textContent = `Итого: ${getCartTotal().toFixed(0)} р.`;
+    }
+    updateCartFloating();
+}
+
+function toggleCartModal(show) {
+    document.getElementById('cartModal').classList.toggle('on', show);
+    if (show) renderCartItems();
+}
+document.getElementById('cartFloating').addEventListener('click', () => toggleCartModal(true));
+document.getElementById('closeCartBtn').addEventListener('click', () => toggleCartModal(false));
+window.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('cartModal')) toggleCartModal(false);
+});
+
+// ==================== ОСНОВНОЙ ИНТЕРФЕЙС ====================
 function openM(idx){const d=plants[idx];if(!d)return;document.getElementById('mtitle').textContent=d.name;
 let body=`<div class="mtags"><span>📦 Мин.заказ: ${d.pack_qty} шт.</span><span>💵 Стоимость партии: ${d.pack_price.toFixed(2).replace('.',',')} ₽</span><span>💰 Цена/шт: ${d.unit_price.toFixed(2).replace('.',',')} ₽</span><span>🌿 ${d.vegetation_type}</span><span>📏 Лист: ${d.leaf_size}</span><span>💎 Взрослое: ~${d.adult_price} ₽</span><span>🥔 Клубень/детка: ~${d.corm_price||'—'} ₽</span><span>🇷🇺 Спрос РФ: ${d.demand_rf}/5</span></div>`;
 body+=`<div class="msec"><div class="mstitle">💡 Ценность и востребованность</div><div class="mtext">${d.cv}</div></div>`;
@@ -471,20 +601,44 @@ body+=`<a class="photo-link" href="https://www.google.com/search?tbm=isch&q=${en
 document.getElementById('mbody').innerHTML=body;document.getElementById('mbg').classList.add('on');}
 function closeM(){document.getElementById('mbg').classList.remove('on');}
 function closeMBg(e){if(e.target===document.getElementById('mbg'))closeM();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeM();toggleCartModal(false);}});
 let sortCol='total',sortDir='desc',searchText='',filterCat='all';
 const categories=[...new Set(plants.map(p=>p.category))].sort();
 const catSelect=document.getElementById('filterCat');
 categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;catSelect.appendChild(o);});
 function getSorted(){let arr=plants.slice();if(filterCat!=='all')arr=arr.filter(d=>d.category===filterCat);if(searchText){const q=searchText.toLowerCase();arr=arr.filter(d=>d.name.toLowerCase().includes(q));}arr.sort((a,b)=>{let va=a[sortCol],vb=b[sortCol];if(typeof va==='string')return sortDir==='asc'?va.localeCompare(vb):vb.localeCompare(va);return sortDir==='desc'?vb-va:va-vb;});return arr;}
-function render(){const arr=getSorted();document.getElementById('countBadge').textContent=arr.length+' позиций';document.getElementById('nores').style.display=arr.length?'none':'block';const tbody=document.getElementById('tbody');if(!arr.length){tbody.innerHTML='';return;}let rows='';for(let i=0;i<arr.length;i++){const d=arr[i];const oidx=plants.indexOf(d);rows+=`<tr><td class="nc">${d.num}</td><td class="name-cell modal-trigger" data-idx="${oidx}">${d.name}</td><td class="sc"><span class="badge">${d.category}</span></td><td class="pc">${d.unit_price.toFixed(2).replace('.',',')} р.</td><td class="pc">${d.adult_price} р.</td><td class="pc">${d.corm_price||'—'}</td><td class="sc">${pips(d.demand_rf)}<span class="sn">${d.demand_rf}/5</span></td><td class="sc">${pips(d.value_rating)}<span class="sn">${d.value_rating}/5</span></td><td class="sc">${pips(d.rarity_rating)}<span class="sn">${d.rarity_rating}/5</span></td><td class="sc"><span class="badge">${SZ[d.size_rating]}</span></td><td class="sc" style="font-size:10px">${d.vegetation_type}</td><td class="sc" style="font-size:10px">${d.leaf_size}</td><td class="sc"><span class="badge">${GR[d.growth_rating]}</span></td><td class="sc"><span class="care-badge cb${d.care_rating}">${CA[d.care_rating]}</span></td><td class="rc" style="font-weight:800;color:${d.total>=22?'#2a7030':d.total>=18?'#7a5c1e':'#8a3030'}">${d.total}/25</td></tr>`;}tbody.innerHTML=rows;document.querySelectorAll('thead th').forEach(th=>th.classList.remove('sorted'));const sth=document.querySelector(`thead th[data-col="${sortCol}"]`);if(sth)sth.classList.add('sorted');}
+function render(){const arr=getSorted();document.getElementById('countBadge').textContent=arr.length+' позиций';document.getElementById('nores').style.display=arr.length?'none':'block';const tbody=document.getElementById('tbody');if(!arr.length){tbody.innerHTML='';return;}
+    const cartIdxSet = new Set(cart.map(item => item.idx));
+    let rows='';for(let i=0;i<arr.length;i++){const d=arr[i];const oidx=plants.indexOf(d);
+    const inCart = cartIdxSet.has(oidx);
+    rows+=`<tr>
+        <td class="sc"><button class="cart-btn ${inCart ? 'in-cart' : ''}" data-idx="${oidx}" onclick="event.stopPropagation();addToCart(${oidx})">${inCart ? '✓' : '+'}</button></td>
+        <td class="nc">${d.num}</td>
+        <td class="name-cell modal-trigger" data-idx="${oidx}">${d.name}</td>
+        <td class="sc"><span class="badge">${d.category}</span></td>
+        <td class="pc">${d.unit_price.toFixed(2).replace('.',',')} р.</td>
+        <td class="pc">${d.adult_price} р.</td>
+        <td class="pc">${d.corm_price||'—'}</td>
+        <td class="sc">${pips(d.demand_rf)}<span class="sn">${d.demand_rf}/5</span></td>
+        <td class="sc">${pips(d.value_rating)}<span class="sn">${d.value_rating}/5</span></td>
+        <td class="sc">${pips(d.rarity_rating)}<span class="sn">${d.rarity_rating}/5</span></td>
+        <td class="sc"><span class="badge">${SZ[d.size_rating]}</span></td>
+        <td class="sc" style="font-size:10px">${d.vegetation_type}</td>
+        <td class="sc" style="font-size:10px">${d.leaf_size}</td>
+        <td class="sc"><span class="badge">${GR[d.growth_rating]}</span></td>
+        <td class="sc"><span class="care-badge cb${d.care_rating}">${CA[d.care_rating]}</span></td>
+        <td class="rc" style="font-weight:800;color:${d.total>=22?'#2a7030':d.total>=18?'#7a5c1e':'#8a3030'}">${d.total}/25</td>
+    </tr>`;}tbody.innerHTML=rows;document.querySelectorAll('thead th').forEach(th=>th.classList.remove('sorted'));const sth=document.querySelector(`thead th[data-col="${sortCol}"]`);if(sth)sth.classList.add('sorted');}
 document.getElementById('tbody').addEventListener('click',e=>{const t=e.target.closest('.modal-trigger');if(!t)return;const idx=parseInt(t.dataset.idx,10);if(!isNaN(idx))openM(idx);});
 document.getElementById('sortCol').addEventListener('change',e=>{sortCol=e.target.value;render();});
 document.getElementById('sortDir').addEventListener('change',e=>{sortDir=e.target.value;render();});
 document.getElementById('search').addEventListener('input',e=>{searchText=e.target.value;render();});
 document.getElementById('filterCat').addEventListener('change',e=>{filterCat=e.target.value;render();});
 document.querySelectorAll('thead th[data-col]').forEach(th=>{th.addEventListener('click',()=>{const col=th.dataset.col;if(sortCol===col)sortDir=sortDir==='desc'?'asc':'desc';else{sortCol=col;sortDir='desc';}document.getElementById('sortCol').value=sortCol;document.getElementById('sortDir').value=sortDir;render();});});
+// Инициализация
+loadCart();
 render();
+updateCartFloating();
 </script>
 </body>
 </html>
