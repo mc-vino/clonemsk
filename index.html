@@ -1,130 +1,142 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Закупки микроклонов · апрель · Корзина v2</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#f4f6f1;color:#1a1c16;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:13px;min-height:100vh}
-    #topbar{position:sticky;top:0;z-index:200;background:#2b3529;box-shadow:0 2px 12px rgba(0,0,0,0.35)}
-    #header{padding:12px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.08)}
-    #header h1{font-size:19px;font-weight:700;color:#e0c76a;white-space:nowrap}
-    #header .sub{color:#9aab92;font-size:10px;font-family:monospace}
-    #controls{padding:8px 22px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid rgba(255,255,255,0.06)}
-    #controls label{font-size:10px;color:#9aab92;text-transform:uppercase;letter-spacing:0.6px;white-space:nowrap}
-    select,input[type="text"]{background:#3b4a38;border:1px solid #506050;color:#e4e9e0;padding:5px 9px;border-radius:4px;font-family:inherit;font-size:11px;outline:none;cursor:pointer}
-    select:focus,input[type="text"]:focus{border-color:#e0c76a}
-    input[type="text"]{width:180px}
-    .fg{display:flex;align-items:center;gap:5px}
-    #countBadge{font-family:monospace;font-size:11px;color:#8a9a85;margin-left:auto;white-space:nowrap}
-    #legend{padding:5px 22px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:10px;color:#8a9a85;border-bottom:1px solid rgba(255,255,255,0.04)}
-    .li{display:flex;align-items:center;gap:4px;white-space:nowrap}
-    .dot{width:8px;height:8px;border-radius:50%}
-    .d5{background:#3a9a50}.d4{background:#7aaa3a}.d3{background:#c0a028}.d2{background:#c06020}.d1{background:#c03030}
-    #twrap{overflow-x:auto;padding:0 22px 70px}
-    table{border-collapse:collapse;margin-top:10px;table-layout:auto;width:100%}
-    thead th{background:#374836;color:#d4dcd0;padding:9px 6px;text-align:left;font-family:monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;cursor:pointer;user-select:none;border-bottom:2px solid #253525;border-right:1px solid #2c3c2c;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
-    thead th:hover{color:#e0c76a;background:#404e40}
-    thead th.sorted{color:#e0c76a;background:#3d4a3c}
-    .si{display:inline-block;margin-left:2px;opacity:0.4;font-size:8px}
-    thead th.sorted .si{opacity:1}
-    tbody tr{background:#fafbf8;color:#1a1c16}
-    tbody tr:nth-child(even){background:#ffffff}
-    tbody tr:hover{background:#e8ede4}
-    td{padding:7px 6px;vertical-align:middle;border-bottom:1px solid #d8dbd2;border-right:1px solid #e2e4dc;color:#1a1c16}
-    td.name-cell{white-space:normal;word-break:break-word;line-height:1.35;cursor:pointer;font-weight:600;font-size:12px;max-width:300px}
-    td.name-cell:hover{color:#7a5c1e;text-decoration:underline}
-    .cart-ctrl{display:flex;align-items:center;justify-content:center;gap:4px}
-    .cart-dec,.cart-inc{background:#3b4a38;color:#e0c76a;border:1px solid #506050;padding:2px 6px;border-radius:4px;cursor:pointer;font-family:monospace;font-size:10px;line-height:1}
-    .cart-dec:hover,.cart-inc:hover{background:#506050;color:#fff}
-    .cart-qty{font-family:monospace;font-weight:700;min-width:20px;text-align:center}
-    .rc{font-family:monospace;font-size:11px;color:#6a7565;text-align:center;font-weight:700}
-    .nc{font-family:monospace;color:#6a7565;font-size:10px;text-align:center}
-    .pc{font-family:monospace;font-size:11px;font-weight:700;color:#7a5c1e;text-align:right}
-    .sc{text-align:center}
-    .badge{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-family:monospace;font-weight:600;background:#dde4d8;color:#3a5030}
-    .care-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-family:monospace;font-weight:700;cursor:pointer}
-    .cb1{background:#c8e8c8;color:#1a5020}.cb2{background:#d8e8c0;color:#3a5810}.cb3{background:#f8ecc0;color:#7a5000}.cb4{background:#f8d8b8;color:#8a3800}.cb5{background:#f8c8c8;color:#8a1010}
-    .nores{text-align:center;padding:50px;color:#6a7565;font-family:monospace;font-size:13px}
-    .pip{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 1px;background:#c8ccc2}
-    .pip.on{background:#e0c76a}
-    .sn{font-size:9px;color:#8a9a85;margin-left:3px}
-    #mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000}
-    #mbg.on{display:flex;align-items:center;justify-content:center}
-    #modal{background:#f2f4ef;border:1px solid #c8ccc2;border-radius:10px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 18px 55px rgba(0,0,0,0.35);animation:mi 0.15s ease}
-    @keyframes mi{from{opacity:0;transform:translateY(-10px) scale(0.96)}to{opacity:1;transform:none}}
-    #mhdr{padding:15px 20px 12px;border-bottom:1px solid #c8ccc2;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:#e8ece3;border-radius:10px 10px 0 0}
-    #mtitle{font-size:15px;font-weight:700;color:#1a1c16;line-height:1.3}
-    #mclose{background:none;border:none;color:#6a7565;cursor:pointer;font-size:22px;line-height:1;padding:2px}
-    #mclose:hover{color:#1a1c16}
-    #mbody{padding:16px 20px 20px;background:#f2f4ef}
-    .msec{margin-bottom:14px}
-    .mstitle{font-family:monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6a7565;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-    .mstitle::after{content:'';flex:1;height:1px;background:#c8ccc2}
-    .mtext{font-size:13px;line-height:1.7;color:#2a3028}
-    .mtags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-    .mtags span{font-family:monospace;font-size:11px;font-weight:600;background:#ffffff;border:1px solid #c8ccc2;border-radius:4px;padding:4px 10px;color:#1a1c16}
-    .photo-link{display:inline-block;margin-top:8px;background:#e0e4da;padding:4px 12px;border-radius:4px;color:#2a5a20;text-decoration:none;font-weight:600;font-size:12px}
-    .photo-link:hover{background:#d0d8c8}
-    ::-webkit-scrollbar{width:6px;height:6px}
-    ::-webkit-scrollbar-track{background:#f4f6f1}
-    ::-webkit-scrollbar-thumb{background:#bcc4b8;border-radius:3px}
-    #cartFloating{position:fixed;bottom:20px;right:20px;background:#2b3529;color:#e0c76a;border-radius:50px;padding:12px 22px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);cursor:pointer;z-index:300}
-    #cartFloating:hover{background:#3a4d38}
-    #cartFloating .cart-icon{font-size:22px}
-    #cartFloating .cart-info{font-family:monospace;font-weight:700;font-size:14px}
-    #cartModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;align-items:center;justify-content:center}
-    #cartModal.on{display:flex}
-    #cartWindow{background:#f2f4ef;border-radius:12px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 18px 55px rgba(0,0,0,0.4)}
-    #cartWindow h3{padding:18px 20px 12px;margin:0;border-bottom:1px solid #c8ccc2;font-size:16px}
-    .cart-list{padding:12px 20px}
-    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e2e4dc}
-    .cart-item-name{font-weight:600;flex:2}
-    .cart-item-qty{font-family:monospace;margin:0 15px}
-    .cart-item-price{font-family:monospace;font-weight:700;color:#7a5c1e}
-    .cart-item button{background:none;border:1px solid #c8ccc2;padding:2px 8px;border-radius:4px;cursor:pointer;font-family:monospace;color:#8a3030}
-    .cart-item button:hover{background:#f8d8d8}
-    .cart-total{padding:12px 20px;font-weight:700;text-align:right;border-top:2px solid #c8ccc2;font-family:monospace;font-size:15px}
-    .empty-cart{text-align:center;padding:30px;color:#6a7565}
-    #cartWindow button.close-cart{background:#e0e4da;border:1px solid #c8ccc2;padding:6px 18px;border-radius:6px;margin:10px 20px 15px;cursor:pointer;font-weight:600}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Закупки микроклонов · апрель · Корзина v3</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{background:#f4f6f1;color:#1a1c16;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:13px;min-height:100vh}
+        #topbar{position:sticky;top:0;z-index:200;background:#2b3529;box-shadow:0 2px 12px rgba(0,0,0,0.35)}
+        #header{padding:12px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.08)}
+        #header h1{font-size:19px;font-weight:700;color:#e0c76a;white-space:nowrap}
+        #header .sub{color:#9aab92;font-size:10px;font-family:monospace}
+        #controls{padding:8px 22px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid rgba(255,255,255,0.06)}
+        #controls label{font-size:10px;color:#9aab92;text-transform:uppercase;letter-spacing:0.6px;white-space:nowrap}
+        select,input[type="text"]{background:#3b4a38;border:1px solid #506050;color:#e4e9e0;padding:5px 9px;border-radius:4px;font-family:inherit;font-size:11px;outline:none;cursor:pointer}
+        select:focus,input[type="text"]:focus{border-color:#e0c76a}
+        input[type="text"]{width:180px}
+        .fg{display:flex;align-items:center;gap:5px}
+        #countBadge{font-family:monospace;font-size:11px;color:#8a9a85;margin-left:auto;white-space:nowrap}
+        #legend{padding:5px 22px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:10px;color:#8a9a85;border-bottom:1px solid rgba(255,255,255,0.04)}
+        .li{display:flex;align-items:center;gap:4px;white-space:nowrap}
+        .dot{width:8px;height:8px;border-radius:50%}
+        .d5{background:#3a9a50}.d4{background:#7aaa3a}.d3{background:#c0a028}.d2{background:#c06020}.d1{background:#c03030}
+        #twrap{overflow-x:auto;padding:0 22px 70px}
+        table{border-collapse:collapse;margin-top:10px;table-layout:auto;width:100%}
+        thead th{background:#374836;color:#d4dcd0;padding:9px 6px;text-align:left;font-family:monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;cursor:pointer;user-select:none;border-bottom:2px solid #253525;border-right:1px solid #2c3c2c;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+        thead th:hover{color:#e0c76a;background:#404e40}
+        thead th.sorted{color:#e0c76a;background:#3d4a3c}
+        .si{display:inline-block;margin-left:2px;opacity:0.4;font-size:8px}
+        thead th.sorted .si{opacity:1}
+        tbody tr{background:#fafbf8;color:#1a1c16}
+        tbody tr:nth-child(even){background:#ffffff}
+        tbody tr:hover{background:#e8ede4}
+        td{padding:7px 6px;vertical-align:middle;border-bottom:1px solid #d8dbd2;border-right:1px solid #e2e4dc;color:#1a1c16}
+        td.name-cell{white-space:normal;word-break:break-word;line-height:1.35;cursor:pointer;font-weight:600;font-size:12px;min-width:200px;max-width:400px}
+        td.name-cell:hover{color:#7a5c1e;text-decoration:underline}
+        .cart-ctrl{display:flex;align-items:center;justify-content:center;gap:4px}
+        .cart-dec,.cart-inc{background:#3b4a38;color:#e0c76a;border:1px solid #506050;padding:2px 6px;border-radius:4px;cursor:pointer;font-family:monospace;font-size:10px;line-height:1}
+        .cart-dec:hover,.cart-inc:hover{background:#506050;color:#fff}
+        .cart-qty{font-family:monospace;font-weight:700;min-width:20px;text-align:center}
+        .rc{font-family:monospace;font-size:11px;color:#6a7565;text-align:center;font-weight:700}
+        .nc{font-family:monospace;color:#6a7565;font-size:10px;text-align:center}
+        .pc{font-family:monospace;font-size:11px;font-weight:700;color:#7a5c1e;text-align:right}
+        .sc{text-align:center}
+        .badge{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-family:monospace;font-weight:600;background:#dde4d8;color:#3a5030}
+        .care-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-family:monospace;font-weight:700;cursor:pointer}
+        .cb1{background:#c8e8c8;color:#1a5020}.cb2{background:#d8e8c0;color:#3a5810}.cb3{background:#f8ecc0;color:#7a5000}.cb4{background:#f8d8b8;color:#8a3800}.cb5{background:#f8c8c8;color:#8a1010}
+        .nores{text-align:center;padding:50px;color:#6a7565;font-family:monospace;font-size:13px}
+        .pip{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 1px;background:#c8ccc2}
+        .pip.on{background:#e0c76a}
+        .sn{font-size:9px;color:#8a9a85;margin-left:3px}
+        #mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000}
+        #mbg.on{display:flex;align-items:center;justify-content:center}
+        #modal{background:#f2f4ef;border:1px solid #c8ccc2;border-radius:10px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 18px 55px rgba(0,0,0,0.35);animation:mi 0.15s ease}
+        @keyframes mi{from{opacity:0;transform:translateY(-10px) scale(0.96)}to{opacity:1;transform:none}}
+        #mhdr{padding:15px 20px 12px;border-bottom:1px solid #c8ccc2;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:#e8ece3;border-radius:10px 10px 0 0}
+        #mtitle{font-size:15px;font-weight:700;color:#1a1c16;line-height:1.3}
+        #mclose{background:none;border:none;color:#6a7565;cursor:pointer;font-size:22px;line-height:1;padding:2px}
+        #mclose:hover{color:#1a1c16}
+        #mbody{padding:16px 20px 20px;background:#f2f4ef}
+        .msec{margin-bottom:14px}
+        .mstitle{font-family:monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6a7565;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+        .mstitle::after{content:'';flex:1;height:1px;background:#c8ccc2}
+        .mtext{font-size:13px;line-height:1.7;color:#2a3028}
+        .mtags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+        .mtags span{font-family:monospace;font-size:11px;font-weight:600;background:#ffffff;border:1px solid #c8ccc2;border-radius:4px;padding:4px 10px;color:#1a1c16}
+        .photo-link{display:inline-block;margin-top:8px;background:#e0e4da;padding:4px 12px;border-radius:4px;color:#2a5a20;text-decoration:none;font-weight:600;font-size:12px}
+        .photo-link:hover{background:#d0d8c8}
+        ::-webkit-scrollbar{width:6px;height:6px}
+        ::-webkit-scrollbar-track{background:#f4f6f1}
+        ::-webkit-scrollbar-thumb{background:#bcc4b8;border-radius:3px}
+        #cartFloating{position:fixed;bottom:20px;right:20px;background:#2b3529;color:#e0c76a;border-radius:50px;padding:12px 22px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);cursor:pointer;z-index:300}
+        #cartFloating:hover{background:#3a4d38}
+        #cartFloating .cart-icon{font-size:22px}
+        #cartFloating .cart-info{font-family:monospace;font-weight:700;font-size:14px}
+        #cartModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;align-items:center;justify-content:center}
+        #cartModal.on{display:flex}
+        #cartWindow{background:#f2f4ef;border-radius:12px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 18px 55px rgba(0,0,0,0.4)}
+        #cartWindow h3{padding:18px 20px 12px;margin:0;border-bottom:1px solid #c8ccc2;font-size:16px}
+        .cart-list{padding:12px 20px}
+        .cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e2e4dc}
+        .cart-item-name{font-weight:600;flex:2}
+        .cart-item-qty{font-family:monospace;margin:0 15px}
+        .cart-item-price{font-family:monospace;font-weight:700;color:#7a5c1e}
+        .cart-item button{background:none;border:1px solid #c8ccc2;padding:2px 8px;border-radius:4px;cursor:pointer;font-family:monospace;color:#8a3030}
+        .cart-item button:hover{background:#f8d8d8}
+        .cart-total{padding:12px 20px;font-weight:700;text-align:right;border-top:2px solid #c8ccc2;font-family:monospace;font-size:15px}
+        .empty-cart{text-align:center;padding:30px;color:#6a7565}
+        #cartWindow button.close-cart{background:#e0e4da;border:1px solid #c8ccc2;padding:6px 18px;border-radius:6px;margin:10px 20px 15px;cursor:pointer;font-weight:600}
+    </style>
 </head>
 <body>
 <div id="topbar">
-  <div id="header">
-    <h1>🌿 Закупки микроклонов · апрель</h1>
-    <div class="sub">334 позиции · Меристемные клоны · Нажмите на название для деталей и фото</div>
-  </div>
-  <div id="controls">
-    <div class="fg"><label>Категория:</label><select id="filterCat"><option value="all">Все</option></select></div>
-    <div class="fg"><label>Сорт. по:</label><select id="sortCol"><option value="total">Итог</option><option value="name">Название</option><option value="unit_price">Цена/шт</option><option value="adult_price">Взрослое</option><option value="corm_price">Клубень/детка</option><option value="demand_rf">Спрос РФ</option><option value="value_rating">Ценность</option><option value="rarity_rating">Редкость</option><option value="growth_rating">Темп роста</option><option value="care_rating">Уход</option></select></div>
-    <div class="fg"><label>Порядок:</label><select id="sortDir"><option value="desc">↓ Лучшие первые</option><option value="asc">↑ Худшие первые</option></select></div>
-    <div class="fg"><label>Поиск:</label><input type="text" id="search" placeholder="Название..."></div>
-    <div id="countBadge">0 позиций</div>
-  </div>
-  <div id="legend"><span>Оценки:</span><div class="li"><div class="dot d5"></div>5</div><div class="li"><div class="dot d4"></div>4</div><div class="li"><div class="dot d3"></div>3</div><div class="li"><div class="dot d2"></div>2</div><div class="li"><div class="dot d1"></div>1</div><span style="margin-left:6px">Итог = сумма баллов (макс 25)</span></div>
+    <div id="header">
+        <h1>🌿 Закупки микроклонов · апрель</h1>
+        <div class="sub">334 позиции · Меристемные клоны · Нажмите на название для деталей и фото</div>
+    </div>
+    <div id="controls">
+        <div class="fg"><label>Категория:</label><select id="filterCat"><option value="all">Все</option></select></div>
+        <div class="fg"><label>Сорт. по:</label><select id="sortCol">
+            <option value="total">Итог</option>
+            <option value="name">Название</option>
+            <option value="unit_price">Цена/шт</option>
+            <option value="adult_price">Взрослое</option>
+            <option value="corm_price">Клубень/детка</option>
+            <option value="price_per_corm">Цена/клубень</option>
+            <option value="demand_rf">Спрос РФ</option>
+            <option value="value_rating">Ценность</option>
+            <option value="rarity_rating">Редкость</option>
+            <option value="growth_rating">Темп роста</option>
+            <option value="care_rating">Уход</option>
+        </select></div>
+        <div class="fg"><label>Порядок:</label><select id="sortDir"><option value="desc">↓ Лучшие первые</option><option value="asc">↑ Худшие первые</option></select></div>
+        <div class="fg"><label>Поиск:</label><input type="text" id="search" placeholder="Название..."></div>
+        <div id="countBadge">0 позиций</div>
+    </div>
+    <div id="legend"><span>Оценки:</span><div class="li"><div class="dot d5"></div>5</div><div class="li"><div class="dot d4"></div>4</div><div class="li"><div class="dot d3"></div>3</div><div class="li"><div class="dot d2"></div>2</div><div class="li"><div class="dot d1"></div>1</div><span style="margin-left:6px">Итог = сумма баллов (макс 25)</span></div>
 </div>
 <div id="twrap">
-  <table id="tbl">
-    <thead><tr><th>Корзина</th><th data-col="num">№</th><th data-col="name">Название</th><th data-col="category">Категория</th><th data-col="unit_price">Цена/шт</th><th data-col="adult_price">Взрослое</th><th data-col="corm_price">Клубень/детка</th><th>Цена/клубень</th><th data-col="demand_rf">Спрос РФ</th><th data-col="value_rating">Ценность</th><th data-col="rarity_rating">Редкость</th><th data-col="size_rating">Размер</th><th data-col="vegetation_type">Тип вегетации</th><th data-col="leaf_size">Лист</th><th data-col="growth_rating">Темп роста</th><th data-col="care_rating">Уход</th><th data-col="total">Итог</th></tr></thead>
-    <tbody id="tbody"></tbody>
-  </table>
-  <div id="nores" class="nores" style="display:none">Ничего не найдено</div>
+    <table id="tbl">
+        <thead><tr><th>Корзина</th><th data-col="num">№</th><th data-col="name">Название</th><th data-col="category">Категория</th><th data-col="unit_price">Цена/шт</th><th data-col="adult_price">Взрослое</th><th data-col="corm_price">Клубень/детка</th><th data-col="price_per_corm">Цена/клубень</th><th data-col="demand_rf">Спрос РФ</th><th data-col="value_rating">Ценность</th><th data-col="rarity_rating">Редкость</th><th data-col="size_rating">Размер</th><th data-col="vegetation_type">Тип вегетации</th><th data-col="leaf_size">Лист</th><th data-col="growth_rating">Темп роста</th><th data-col="care_rating">Уход</th><th data-col="total">Итог</th></tr></thead>
+        <tbody id="tbody"></tbody>
+    </table>
+    <div id="nores" class="nores" style="display:none">Ничего не найдено</div>
 </div>
 
 <div id="cartFloating">
-  <span class="cart-icon">🛒</span>
-  <span class="cart-info" id="cartFloatingInfo">0 шт. / 0 р.</span>
+    <span class="cart-icon">🛒</span>
+    <span class="cart-info" id="cartFloatingInfo">0 шт. / 0 р.</span>
 </div>
 
 <div id="cartModal">
-  <div id="cartWindow">
-    <h3>🛒 Корзина закупки</h3>
-    <div class="cart-list" id="cartList"></div>
-    <div class="cart-total" id="cartTotal"></div>
-    <button class="close-cart" id="closeCartBtn">Закрыть</button>
-  </div>
+    <div id="cartWindow">
+        <h3>🛒 Корзина закупки</h3>
+        <div class="cart-list" id="cartList"></div>
+        <div class="cart-total" id="cartTotal"></div>
+        <button class="close-cart" id="closeCartBtn">Закрыть</button>
+    </div>
 </div>
 
 <div id="mbg" onclick="closeMBg(event)"><div id="modal"><div id="mhdr"><div id="mtitle"></div><button id="mclose" onclick="closeM()">✕</button></div><div id="mbody"></div></div></div>
@@ -255,7 +267,7 @@ const plants = [
     {num:119,category:"Alocasia",name:"Alocasia Zebrina Var (Albo)",pack_qty:5,pack_price:29947.5,unit_price:5989.5,adult_price:9500,corm_price:1900,demand_rf:4,vegetation_type:"Куст",leaf_size:"20-40 см",value_rating:5,rarity_rating:4,size_rating:3,growth_rating:3,care_rating:3,cv:"Зебрина Альбо.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:120,category:"Alocasia",name:"Alocasia Zebrina Var (Aurea)",pack_qty:5,pack_price:11025,unit_price:2205,adult_price:4500,corm_price:1000,demand_rf:3,vegetation_type:"Куст",leaf_size:"20-40 см",value_rating:5,rarity_rating:3,size_rating:3,growth_rating:3,care_rating:3,cv:"Зебрина Ауреа.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:121,category:"Alocasia",name:"Alocasia Zebrina Var (Mint)",pack_qty:10,pack_price:14808.15,unit_price:1480.81,adult_price:3500,corm_price:800,demand_rf:4,vegetation_type:"Куст",leaf_size:"20-40 см",value_rating:5,rarity_rating:3,size_rating:3,growth_rating:3,care_rating:3,cv:"Зебрина Минт.",cg:"Средний рост.",cc:"Влажность 60%."},
-    {num:122,category:"Anthurium",name:"Anoectochilus Black Swan Var (Albo)",pack_qty:10,pack_price:12793.5,unit_price:1279.35,adult_price:3500,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"5-10 см",value_rating:5,rarity_rating:4,size_rating:1,growth_rating:3,care_rating:3,cv:"Чёрный лебедь Альбо.",cg:"Средний рост.",cc:"Влажность 65-75%."},
+    {num:122,category:"Anthurium",name:"Anoectochilus Black Swan Var (Albo)",pack_qty:10,pack_price:12793.5,unit_price:1279.35,adult_price:3500,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"5-10 см",value_rating:5,rarity_rating:4,size_rating:1,growth_rating:3,care_rating:3,cv:"Чёрный лебедь.",cg:"Средний рост.",cc:"Влажность 65-75%."},
     {num:123,category:"Anthurium",name:"Anoectochilus Black Swan Var (Aurea)",pack_qty:10,pack_price:15516,unit_price:1551.6,adult_price:4000,corm_price:0,demand_rf:4,vegetation_type:"Куст",leaf_size:"5-10 см",value_rating:5,rarity_rating:4,size_rating:1,growth_rating:3,care_rating:3,cv:"Чёрный лебедь Ауреа.",cg:"Средний рост.",cc:"Влажность 65-75%."},
     {num:124,category:"Anthurium",name:"Anoectochilus Roxburghii Var",pack_qty:50,pack_price:11745,unit_price:234.9,adult_price:1000,corm_price:0,demand_rf:3,vegetation_type:"Ползучее",leaf_size:"5-10 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:3,cv:"Роксбурги.",cg:"Средний рост.",cc:"Влажность 65%."},
     {num:125,category:"Anthurium",name:"Anoectochilus Silver Silk",pack_qty:10,pack_price:12793.5,unit_price:1279.35,adult_price:3500,corm_price:0,demand_rf:3,vegetation_type:"Куст",leaf_size:"5-10 см",value_rating:4,rarity_rating:3,size_rating:1,growth_rating:3,care_rating:3,cv:"Серебряный шёлк.",cg:"Средний рост.",cc:"Влажность 65%."},
@@ -274,7 +286,7 @@ const plants = [
     {num:138,category:"Anthurium",name:"Anthurium Hybrid (Ace of Spades x Papi)",pack_qty:20,pack_price:13608,unit_price:680.4,adult_price:2000,corm_price:0,demand_rf:4,vegetation_type:"Эпифит",leaf_size:"до 45 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:3,cv:"AOS x Papi.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:139,category:"Anthurium",name:"Anthurium Hybrid (King of Spades × Unknown)",pack_qty:30,pack_price:10813.5,unit_price:360.45,adult_price:1300,corm_price:0,demand_rf:3,vegetation_type:"Эпифит",leaf_size:"до 50 см",value_rating:4,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:2,cv:"King of Spades гибрид.",cg:"Средний рост.",cc:"Простой уход."},
     {num:140,category:"Anthurium",name:"Anthurium Hybrid (Papi x King of Spades)",pack_qty:10,pack_price:22050,unit_price:2205,adult_price:4500,corm_price:0,demand_rf:4,vegetation_type:"Эпифит",leaf_size:"до 45 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:3,cv:"Papi x King of Spades.",cg:"Средний рост.",cc:"Влажность 60%."},
-    {num:141,category:"Anthurium",name:"Anthurium Hybrid (Red Crystallinum x Dorayaki)",pack_qty:20,pack_price:11430,unit_price:571.5,adult_price:1800,corm_price:0,demand_rf:4,vegetation_type:"Эпифит",leaf_size:"до 40 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:3,cv:"Red Crystallinum x Dorayaki.",cg:"Средний рост.",cc:"Влажность 60%."},
+    {num:141,category:"Anthurium",name:"Anthurium Hybrid (Red Crystallinum x Dorayaki)",pack_qty:20,pack_price:11430,unit_price:571.5,adult_price:1800,corm_price:0,demand_rf:4,vegetation_type:"Эпифит",leaf_size:"до 40 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:3,cv:"Red Cryst. x Dorayaki.",cg:"Средний рост.",cc:"Влажность 60%."},
     {num:142,category:"Anthurium",name:"Anthurium Hybrid (Red Crystallinum x SKG x Silver Tiger)",pack_qty:10,pack_price:12249,unit_price:1224.9,adult_price:3000,corm_price:0,demand_rf:3,vegetation_type:"Эпифит",leaf_size:"до 45 см",value_rating:5,rarity_rating:4,size_rating:2,growth_rating:3,care_rating:3,cv:"Red Cryst. x SKG x Silver Tiger.",cg:"Средний рост.",cc:"Влажность 65%."},
     {num:143,category:"Anthurium",name:"Anthurium King Of Spades",pack_qty:30,pack_price:10813.5,unit_price:360.45,adult_price:1300,corm_price:0,demand_rf:4,vegetation_type:"Эпифит",leaf_size:"до 60 см",value_rating:5,rarity_rating:2,size_rating:3,growth_rating:3,care_rating:2,cv:"Король пик.",cg:"Средний рост.",cc:"Простой уход."},
     {num:144,category:"Anthurium",name:"Anthurium Luxurians (Original species)",pack_qty:20,pack_price:11430,unit_price:571.5,adult_price:1800,corm_price:0,demand_rf:4,vegetation_type:"Эпифит",leaf_size:"до 40 см",value_rating:5,rarity_rating:3,size_rating:2,growth_rating:3,care_rating:3,cv:"Луксурианс.",cg:"Средний рост.",cc:"Влажность 60%."},
@@ -470,10 +482,10 @@ const plants = [
     {num:334,category:"Syngonium",name:"Syngonium Babudi",pack_qty:100,pack_price:8370,unit_price:83.7,adult_price:500,corm_price:0,demand_rf:3,vegetation_type:"Лиана",leaf_size:"до 20 см",value_rating:4,rarity_rating:2,size_rating:1,growth_rating:3,care_rating:2,cv:"Бабуди.",cg:"Средний рост.",cc:"Простой уход."}
 ];
 
-plants.forEach(p=>{p.total=p.value_rating+p.demand_rf+p.rarity_rating+p.size_rating+p.growth_rating+(5-p.care_rating);});
+plants.forEach(p=>{p.price_per_corm = p.corm_price ? p.unit_price / p.corm_price : 0; p.total=p.value_rating+p.demand_rf+p.rarity_rating+p.size_rating+p.growth_rating+(5-p.care_rating);});
 
 let cart = [];
-const CART_KEY = 'plantCart2025v2';
+const CART_KEY = 'plantCart2025v3';
 function loadCart() { try { const saved = localStorage.getItem(CART_KEY); if (saved) cart = JSON.parse(saved); else cart = []; } catch(e){ cart = []; } }
 function saveCart() { localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartFloating(); }
 function addToCart(idx) { const existing = cart.find(item => item.idx === idx); if (existing) { existing.qty += 1; } else { cart.push({ idx: idx, qty: 1 }); } saveCart(); renderCartItems(); render(); }
@@ -523,7 +535,7 @@ function render(){const arr=getSorted();document.getElementById('countBadge').te
         <td class="pc">${d.unit_price.toFixed(2).replace('.',',')} р.</td>
         <td class="pc">${d.adult_price} р.</td>
         <td class="pc">${d.corm_price||'—'}</td>
-        <td class="pc">${d.corm_price ? (d.unit_price / d.corm_price).toFixed(1) : '—'}</td>
+        <td class="pc">${d.price_per_corm ? d.price_per_corm.toFixed(1) : '—'}</td>
         <td class="sc">${pips(d.demand_rf)}<span class="sn">${d.demand_rf}/5</span></td>
         <td class="sc">${pips(d.value_rating)}<span class="sn">${d.value_rating}/5</span></td>
         <td class="sc">${pips(d.rarity_rating)}<span class="sn">${d.rarity_rating}/5</span></td>
