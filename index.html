@@ -88,6 +88,12 @@ td.name-cell:hover{color:#7a5c1e;text-decoration:underline}
 .cart-total{padding:11px 20px;font-weight:700;text-align:right;border-top:2px solid #c8ccc2;font-family:monospace;font-size:14px}
 .empty-cart{text-align:center;padding:28px;color:#6a7565}
 .close-cart{background:#e0e4da;border:1px solid #c8ccc2;padding:6px 18px;border-radius:6px;margin:8px 20px 14px;cursor:pointer;font-weight:600;font-size:13px}
+.cart-btn-row{display:flex;flex-wrap:wrap;gap:8px;padding:4px 20px 14px;align-items:center}
+.cart-btn-row .close-cart{margin:0 0 0 auto}
+.cart-export{background:#2b3529;color:#e0c76a;border:1px solid #506050;padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit}
+.cart-export:hover{background:#3a4d38}
+.cart-export:disabled{opacity:.45;cursor:not-allowed}
+.copy-ok{background:#2a6020!important;color:#fff!important;border-color:#2a6020!important}
 </style>
 </head>
 <body>
@@ -139,7 +145,11 @@ td.name-cell:hover{color:#7a5c1e;text-decoration:underline}
   <h3>🛒 Корзина закупки</h3>
   <div class="cart-list" id="cartList"></div>
   <div class="cart-total" id="cartTotal"></div>
-  <button class="close-cart" id="closeCartBtn">Закрыть</button>
+  <div class="cart-btn-row">
+    <button class="cart-export" id="copyCartBtn">📋 Скопировать список</button>
+    <button class="cart-export" id="downloadCartBtn">⬇ Скачать .txt</button>
+    <button class="close-cart" id="closeCartBtn">Закрыть</button>
+  </div>
 </div></div>
 <div id="mbg" onclick="closeMBg(event)"><div id="modal"><div id="mhdr"><div id="mtitle"></div><button id="mclose" onclick="closeM()">✕</button></div><div id="mbody"></div></div></div>
 <script>
@@ -162,13 +172,39 @@ function cartTotal(){return cart.reduce((s,c)=>s+(plants[c.i]?.unit_byn||0)*c.q,
 function updateCartFloat(){document.getElementById('cfi').textContent=`${cartCount()} шт. / ${cartTotal().toFixed(2).replace('.',',')} р.`;}
 function renderCartList(){
   const el=document.getElementById('cartList'),tel=document.getElementById('cartTotal');
-  if(!cart.length){el.innerHTML='<div class="empty-cart">Корзина пуста</div>';tel.textContent='';return;}
+  const cpy=document.getElementById('copyCartBtn'),dl=document.getElementById('downloadCartBtn');
+  const empty=!cart.length;
+  if(cpy)cpy.disabled=empty;
+  if(dl)dl.disabled=empty;
+  if(empty){el.innerHTML='<div class="empty-cart">Корзина пуста</div>';tel.textContent='';return;}
   el.innerHTML=cart.map(c=>{const p=plants[c.i];if(!p)return'';return`<div class="cart-item"><span class="cin">${p.name}</span><span class="ciq">${c.q} шт.</span><span class="cip">${(p.unit_byn*c.q).toFixed(2).replace('.',',')} р.</span><button class="cib" onclick="removeFromCart(${c.i})">✕</button></div>`;}).join('');
   tel.textContent=`Итого: ${cartTotal().toFixed(2).replace('.',',')} р.`;
 }
 function toggleCart(show){document.getElementById('cartModal').classList.toggle('on',show);if(show)renderCartList();}
 document.getElementById('cartFloating').addEventListener('click',()=>toggleCart(true));
 document.getElementById('closeCartBtn').addEventListener('click',()=>toggleCart(false));
+function buildCartExport(){
+  return cart.map(c=>{const p=plants[c.i];if(!p)return'';const art=p.art!=null?p.art:'—';const q=c.q>1?` ×${c.q}`:'';return `${art} - ${p.name}${q}`;}).filter(Boolean).join('\n');
+}
+document.getElementById('copyCartBtn').addEventListener('click',()=>{
+  if(!cart.length)return;
+  const txt=buildCartExport();
+  const btn=document.getElementById('copyCartBtn');
+  const done=()=>{btn.textContent='✓ Скопировано';btn.classList.add('copy-ok');setTimeout(()=>{btn.textContent='📋 Скопировать список';btn.classList.remove('copy-ok');},1600);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>{fallbackCopy(txt);done();});}
+  else{fallbackCopy(txt);done();}
+});
+function fallbackCopy(txt){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+document.getElementById('downloadCartBtn').addEventListener('click',()=>{
+  if(!cart.length)return;
+  const txt=buildCartExport();
+  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const d=new Date().toISOString().slice(0,10);
+  a.href=url;a.download=`zakupka_${d}.txt`;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
 window.addEventListener('click',e=>{if(e.target===document.getElementById('cartModal'))toggleCart(false);});
 
 const perspText={10:'Максимальная перспектива — быстрый многолетний поток деток многократно окупает клон',9:'Отличная — клон-маточник окупается в разы за горизонт',8:'Очень хорошая — уверенная многолетняя отдача',7:'Хорошая — окупается с запасом за несколько лет',6:'Выше среднего — маточник вернёт стоимость клона и даст прибыль',5:'Средняя — окупаемость около ×1–1.5, маржа умеренная',4:'Ниже среднего — долгая окупаемость, обесценивание съедает поток',3:'Слабая — едва окупается за горизонт',2:'Невыгодно как маточник — лучше черенок от взрослого',1:'Не рекомендуется для маточника'};
